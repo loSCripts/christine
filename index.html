@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>ChristineApp</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -11,7 +11,7 @@
 
 :root {
   --bg: #f5f5f7;
-  --sidebar-bg: rgba(255,255,255,0.72);
+  --sidebar-bg: #ffffff;
   --card: #ffffff;
   --card-hover: #fafafa;
   --border: rgba(0,0,0,0.08);
@@ -31,7 +31,7 @@
   --radius: 14px;
   --radius-lg: 18px;
   --sidebar-w: 228px;
-  --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, Helvetica, sans-serif;
 }
 
 body {
@@ -39,9 +39,12 @@ body {
   background: var(--bg);
   color: var(--text-primary);
   min-height: 100vh;
+  display: -webkit-flex;
   display: flex;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Suppression du délai de 300ms au tap sur iOS */
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
 }
 
 /* ─── SIDEBAR ─── */
@@ -49,10 +52,10 @@ body {
   width: var(--sidebar-w);
   min-height: 100vh;
   background: var(--sidebar-bg);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
   border-right: 1px solid var(--border);
+  display: -webkit-flex;
   display: flex;
+  -webkit-flex-direction: column;
   flex-direction: column;
   position: fixed;
   top: 0; left: 0; bottom: 0;
@@ -61,7 +64,9 @@ body {
 }
 
 .sidebar-brand {
+  display: -webkit-flex;
   display: flex;
+  -webkit-align-items: center;
   align-items: center;
   gap: 10px;
   padding: 4px 18px 28px;
@@ -71,7 +76,12 @@ body {
   width: 34px; height: 34px;
   background: linear-gradient(160deg, #1c1c1e 0%, #3a3a3c 100%);
   border-radius: 9px;
-  display: flex; align-items: center; justify-content: center;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
   font-size: 16px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
@@ -92,38 +102,54 @@ body {
 }
 
 .nav-item {
+  display: -webkit-flex;
   display: flex;
+  -webkit-align-items: center;
   align-items: center;
   gap: 9px;
-  padding: 8px 10px;
-  margin: 1px 8px;
+  /* Zone tactile agrandie pour tablette */
+  padding: 12px 10px;
+  margin: 2px 8px;
   border-radius: 9px;
   cursor: pointer;
-  transition: background 0.13s, color 0.13s;
   font-size: 13.5px;
   font-weight: 500;
   color: var(--text-secondary);
+  -webkit-user-select: none;
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  /* Pas de transition qui ralentit la réactivité sur vieux iOS */
+  transition: background 0.05s;
+  /* Minimum 44px de hauteur recommandé par Apple pour les cibles tactiles */
+  min-height: 44px;
 }
-
-.nav-item:hover { background: rgba(0,0,0,0.04); color: var(--text-primary); }
 
 .nav-item.active {
   background: var(--accent-light);
   color: var(--accent);
 }
 
+.nav-item.tapped {
+  background: rgba(0,0,0,0.06);
+}
+
 .nav-icon {
   width: 28px; height: 28px;
   border-radius: 7px;
-  display: flex; align-items: center; justify-content: center;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
   font-size: 14px;
+  -webkit-flex-shrink: 0;
   flex-shrink: 0;
   background: rgba(0,0,0,0.03);
 }
 .nav-item.active .nav-icon { background: rgba(0,113,227,0.1); }
 
-.sidebar-spacer { flex: 1; }
+.sidebar-spacer { -webkit-flex: 1; flex: 1; }
 
 .sidebar-footer {
   padding: 12px 18px 0;
@@ -135,8 +161,11 @@ body {
 /* ─── MAIN ─── */
 .main {
   margin-left: var(--sidebar-w);
+  -webkit-flex: 1;
   flex: 1;
+  display: -webkit-flex;
   display: flex;
+  -webkit-flex-direction: column;
   flex-direction: column;
   min-height: 100vh;
 }
@@ -144,14 +173,16 @@ body {
 /* ─── TOP BAR ─── */
 .topbar {
   height: 48px;
-  background: rgba(245,245,247,0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(245,245,247,0.95);
   border-bottom: 1px solid var(--border);
+  display: -webkit-flex;
   display: flex;
+  -webkit-align-items: center;
   align-items: center;
   padding: 0 28px;
-  position: sticky; top: 0; z-index: 50;
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0; z-index: 50;
   gap: 10px;
 }
 
@@ -161,9 +192,6 @@ body {
   letter-spacing: -0.2px;
 }
 
-.topbar-sep { color: var(--text-tertiary); font-size: 14px; }
-.topbar-sub { font-size: 13px; color: var(--text-tertiary); }
-
 /* ─── CONTENT ─── */
 .content {
   padding: 28px 32px 60px;
@@ -172,21 +200,12 @@ body {
 
 .tab-panel { display: none; }
 .tab-panel.active {
+  display: -webkit-flex;
   display: flex;
+  -webkit-flex-direction: column;
   flex-direction: column;
   gap: 18px;
-  animation: panelIn 0.2s ease;
 }
-
-@keyframes panelIn {
-  from { opacity:0; transform:translateY(8px); }
-  to   { opacity:1; transform:translateY(0); }
-}
-
-/* ─── PAGE HEADER ─── */
-.ph { margin-bottom: 4px; }
-.ph-title { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.2; }
-.ph-desc  { font-size: 13.5px; color: var(--text-secondary); margin-top: 5px; line-height: 1.5; }
 
 /* ─── CARD ─── */
 .card {
@@ -200,17 +219,20 @@ body {
 .card-head {
   padding: 16px 20px 13px;
   border-bottom: 1px solid var(--border);
+  display: -webkit-flex;
   display: flex;
+  -webkit-align-items: center;
   align-items: center;
+  -webkit-justify-content: space-between;
   justify-content: space-between;
   gap: 12px;
 }
 
-.card-head-left { flex: 1; }
+.card-head-left { -webkit-flex: 1; flex: 1; }
 .ch-title { font-size: 13px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.1px; }
 .ch-sub   { font-size: 11.5px; color: var(--text-tertiary); margin-top: 2px; line-height: 1.4; }
 
-.card-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+.card-body { padding: 18px 20px; display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; gap: 14px; }
 
 /* ─── DROP ZONE ─── */
 .dropzone {
@@ -220,46 +242,62 @@ body {
   text-align: center;
   cursor: pointer;
   position: relative;
-  transition: border-color 0.18s, background 0.18s;
   background: #fafafa;
+  -webkit-tap-highlight-color: transparent;
 }
-.dropzone:hover, .dropzone.dragover {
+
+.dropzone.dragover {
   border-color: var(--accent);
   background: var(--accent-light);
 }
+
+/* L'input file est caché mais reste accessible */
 .dropzone input[type="file"] {
   position: absolute; inset: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  font-size: 16px; /* Évite le zoom automatique sur iOS */
 }
+
 .dz-icon {
   width: 48px; height: 48px;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 13px;
-  display: flex; align-items: center; justify-content: center;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
   font-size: 20px;
   margin: 0 auto 12px;
   box-shadow: var(--shadow-sm);
-  transition: background 0.18s, transform 0.18s;
 }
-.dropzone:hover .dz-icon { background: var(--accent); transform: scale(1.06); }
 .dz-title { font-size: 13.5px; font-weight: 600; color: var(--text-primary); margin-bottom: 3px; }
 .dz-link  { font-size: 13px; color: var(--accent); font-weight: 500; }
+.dz-scan-hint { font-size: 12px; color: var(--text-tertiary); margin-top: 10px; }
+.dz-scan-link {
+  color: var(--accent);
+  font-weight: 500;
+  text-decoration: underline;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
 .dz-fmts  { font-size: 11px; color: var(--text-tertiary); margin-top: 7px; line-height: 1.6; }
 
 /* ─── FILE LIST ─── */
-.file-list { display: flex; flex-direction: column; gap: 5px; }
+.file-list { display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; gap: 5px; }
 .file-item {
-  display: flex; align-items: center; gap: 10px;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  gap: 10px;
   padding: 9px 12px;
   background: #f7f7f7;
   border-radius: 9px;
   border: 1px solid var(--border);
-  animation: fadeUp 0.16s ease;
-}
-@keyframes fadeUp {
-  from { opacity:0; transform:translateY(5px); }
-  to   { opacity:1; transform:translateY(0); }
 }
 .f-badge {
   font-size: 9.5px; font-weight: 700;
@@ -268,127 +306,214 @@ body {
   padding: 3px 6px; border-radius: 5px;
   min-width: 36px; text-align: center;
 }
-.f-name { flex:1; font-size: 12.5px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.f-name { -webkit-flex:1; flex:1; font-size: 12.5px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .f-size { font-size:11.5px; color:var(--text-tertiary); white-space:nowrap; }
 .f-del {
-  width:20px; height:20px; border-radius:50%;
-  background:none; border:none; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  color:var(--text-tertiary); font-size:11px;
-  transition: background 0.13s, color 0.13s;
+  /* Zone tactile agrandie */
+  width: 36px; height: 36px; border-radius: 50%;
+  background: none; border: none; cursor: pointer;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  color: var(--text-tertiary); font-size: 13px;
+  -webkit-tap-highlight-color: transparent;
 }
-.f-del:hover { background:var(--red-light); color:var(--red); }
 
 /* ─── BUTTONS ─── */
 .btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  gap: 6px; padding: 9px 17px;
+  display: -webkit-inline-flex;
+  display: inline-flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  gap: 6px;
+  /* Hauteur min 44px pour iOS */
+  padding: 12px 20px;
+  min-height: 44px;
   border-radius: 980px;
   font-family: var(--font); font-size: 13px; font-weight: 500;
   cursor: pointer; border: none;
-  transition: background 0.15s, opacity 0.15s, transform 0.1s;
   white-space: nowrap; letter-spacing: -0.1px;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: none;
 }
 .btn-blue { background: var(--accent); color: #fff; }
-.btn-blue:hover:not(:disabled) { background: var(--accent-hover); }
-.btn-blue:active:not(:disabled) { transform: scale(0.97); }
+.btn-blue:active:not(:disabled) { background: #005bbf; }
 .btn-outline {
   background: var(--card); color: var(--text-primary);
   border: 1px solid var(--border-strong);
   box-shadow: var(--shadow-sm);
 }
-.btn-outline:hover:not(:disabled) { background: #f0f0f2; }
-.btn-ghost { background: none; color: var(--accent); padding: 9px 12px; }
-.btn-ghost:hover:not(:disabled) { background: var(--accent-light); }
+.btn-outline:active:not(:disabled) { background: #f0f0f2; }
+.btn-ghost { background: none; color: var(--accent); padding: 12px 14px; }
+.btn-ghost:active:not(:disabled) { background: var(--accent-light); }
 .btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
-.btn-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.btn-row { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; gap: 8px; -webkit-flex-wrap: wrap; flex-wrap: wrap; }
 
 /* ─── PROGRESS ─── */
-.progress-wrap { display: none; flex-direction: column; gap: 7px; }
+.progress-wrap { display: none; -webkit-flex-direction: column; flex-direction: column; gap: 7px; }
 .prog-track {
   height: 3px; background: #e8e8ed;
   border-radius: 99px; overflow: hidden;
 }
 .prog-fill {
   height: 100%; background: var(--accent);
-  border-radius: 99px; transition: width 0.35s ease; width: 0%;
+  border-radius: 99px; width: 0%;
+  -webkit-transition: width 0.35s ease;
+  transition: width 0.35s ease;
 }
 .prog-txt { font-size: 11.5px; color: var(--text-secondary); }
 
 /* ─── STATUS ─── */
 .status-pill {
-  display: none; align-items: center; gap: 8px;
+  display: none;
+  -webkit-align-items: center;
+  align-items: center;
+  gap: 8px;
   padding: 10px 14px; border-radius: 10px;
   font-size: 12.5px; font-weight: 500;
 }
-.status-pill.ok  { display:flex; background:rgba(48,209,88,0.1); color:#1a7a36; }
-.status-pill.err { display:flex; background:var(--red-light); color:var(--red); }
+.status-pill.ok  { display:-webkit-flex; display:flex; background:rgba(48,209,88,0.1); color:#1a7a36; }
+.status-pill.err { display:-webkit-flex; display:flex; background:var(--red-light); color:var(--red); }
 
-/* ─── SCAN LAYOUT ─── */
-.scan-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
+/* ─── MODAL SCAN ─── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 200;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
 }
-@media (max-width: 680px) { .scan-grid { grid-template-columns: 1fr; } }
-
-.scan-card {
+.modal-overlay.open {
+  display: -webkit-flex;
+  display: flex;
+}
+.modal-box {
   background: var(--card);
-  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+  width: 92%;
+  max-width: 420px;
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  display: flex; flex-direction: column;
 }
-.sc-head {
-  padding: 11px 16px;
+.modal-head {
+  padding: 16px 20px;
   border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 7px;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
 }
-.sc-head-title { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
-.sdot {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: var(--text-tertiary);
-  transition: background 0.3s, box-shadow 0.3s;
+.modal-title { font-size: 15px; font-weight: 600; }
+.modal-close {
+  width: 44px; height: 44px;
+  background: none; border: none;
+  font-size: 20px; cursor: pointer; color: var(--text-tertiary);
+  display: -webkit-flex; display: flex;
+  -webkit-align-items: center; align-items: center;
+  -webkit-justify-content: center; justify-content: center;
+  -webkit-tap-highlight-color: transparent;
 }
-.sdot.live {
-  background: var(--accent2);
-  box-shadow: 0 0 0 3px rgba(48,209,88,0.2);
+.modal-body {
+  padding: 20px;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  gap: 12px;
 }
+.modal-option {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 70px;
+}
+.modal-option:active { background: var(--accent-light); border-color: var(--accent); }
+.modal-option-icon { font-size: 26px; -webkit-flex-shrink: 0; flex-shrink: 0; }
+.modal-option-text .mot-title { font-size: 14px; font-weight: 600; }
+.modal-option-text .mot-sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
 
-.scan-viewport {
-  flex:1; aspect-ratio:3/4;
+/* ─── SCAN PANEL ─── */
+.scan-panel {
+  display: none;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  gap: 12px;
+}
+.scan-panel.open { display: -webkit-flex; display: flex; }
+
+.scan-viewport-wrap {
+  position: relative;
   background: #1c1c1e;
-  display: flex; align-items: center; justify-content: center;
-  overflow: hidden; position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
 }
-.scan-viewport video,
-.scan-viewport canvas { max-width:100%; max-height:100%; object-fit:contain; display:block; }
+.scan-viewport-wrap video,
+.scan-viewport-wrap canvas { max-width: 100%; max-height: 100%; display: block; }
 
-.sv-empty { text-align:center; padding:20px; }
+/* Overlay SVG pour délimitation du doc */
+#docOutlineSvg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+
+.sv-empty { text-align:center; padding:20px; position: absolute; }
 .sv-empty-icon { font-size:28px; display:block; margin-bottom:8px; opacity:0.35; }
 .sv-empty-text { font-size:11.5px; color:#888; line-height:1.6; }
 
-.sc-controls {
-  padding: 13px 14px;
-  border-top: 1px solid var(--border);
-  background: #fafafa;
-  display: flex; flex-direction:column; gap:9px;
+.scan-controls {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.chip-row { display:flex; gap:5px; flex-wrap:wrap; }
+.chip-row { display:-webkit-flex; display:flex; gap:6px; -webkit-flex-wrap:wrap; flex-wrap:wrap; }
 .chip {
-  padding: 4px 11px; border-radius:99px;
-  font-size: 11.5px; font-weight: 500;
+  padding: 8px 14px;
+  min-height: 36px;
+  border-radius: 99px;
+  font-size: 12px; font-weight: 500;
   border: 1px solid var(--border-strong);
   background: var(--card); color: var(--text-secondary);
-  cursor: pointer; transition: all 0.13s; user-select:none;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: none;
 }
-.chip:hover { border-color:var(--accent); color:var(--accent); }
-.chip.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+.chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
-.export-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+.export-grid { display: -webkit-flex; display: flex; gap: 8px; }
+.export-grid .btn { -webkit-flex: 1; flex: 1; }
 
 /* ─── INFO CARD ─── */
 .info-card {
@@ -396,9 +521,13 @@ body {
   border: 1px solid rgba(0,113,227,0.12);
   border-radius: var(--radius-lg);
   padding: 16px 20px;
-  display: flex; align-items: flex-start; gap: 12px;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+  gap: 12px;
 }
-.ic-icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+.ic-icon { font-size:18px; -webkit-flex-shrink:0; flex-shrink:0; margin-top:1px; }
 .ic-title { font-size:12.5px; font-weight:600; color:var(--accent); margin-bottom:4px; }
 .ic-body  { font-size:12px; color:#3a5a8a; line-height:1.6; }
 
@@ -413,11 +542,13 @@ body {
   border: 1px solid rgba(0,113,227,0.14);
   border-radius: var(--radius-lg);
   padding: 22px 24px;
+  display: -webkit-flex;
   display: flex;
+  -webkit-align-items: flex-start;
   align-items: flex-start;
   gap: 16px;
 }
-.hero-emoji { font-size: 28px; flex-shrink:0; margin-top:2px; }
+.hero-emoji { font-size: 28px; -webkit-flex-shrink:0; flex-shrink:0; margin-top:2px; }
 .hero-title {
   font-size: 17px; font-weight: 700;
   letter-spacing: -0.3px;
@@ -435,7 +566,9 @@ body {
   margin-left: var(--sidebar-w);
   border-top: 1px solid var(--border);
   padding: 18px 32px;
+  display: -webkit-flex;
   display: flex;
+  -webkit-align-items: center;
   align-items: center;
   gap: 6px;
   font-size: 12.5px;
@@ -445,6 +578,12 @@ body {
   font-weight: 600;
   color: var(--text-secondary);
   letter-spacing: -0.1px;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 600px) {
+  :root { --sidebar-w: 200px; }
+  .content { padding: 18px 16px 60px; }
 }
 </style>
 </head>
@@ -459,18 +598,13 @@ body {
 
   <div class="nav-section-label">Outils</div>
 
-  <div class="nav-item active" data-tab="convert" onclick="switchTab('convert')">
+  <div class="nav-item active" id="nav-convert" data-tab="convert">
     <div class="nav-icon">📄</div>
     Convertir en PDF
   </div>
 
-  <div class="nav-item" data-tab="scan" onclick="switchTab('scan')">
-    <div class="nav-icon">📷</div>
-    Scanner
-  </div>
-
   <div class="sidebar-spacer"></div>
-  <div class="sidebar-footer">ChristineApp · v1.0</div>
+  <div class="sidebar-footer">ChristineApp · v2.0</div>
 </aside>
 
 <!-- ══ MAIN ══ -->
@@ -490,7 +624,7 @@ body {
         <div class="hero-emoji">✨</div>
         <div>
           <div class="hero-title">ChristineApp</div>
-          <div class="hero-desc">Cette application a été entièrement créée pour Christine. Elle lui permet de convertir facilement n'importe quel document ou image en PDF, et de scanner ses documents avec son téléphone ou son ordinateur pour les exporter proprement.</div>
+          <div class="hero-desc">Cette application a été entièrement créée pour Christine. Elle lui permet de convertir facilement n'importe quel document ou image en PDF, et de scanner ses documents avec son téléphone pour les exporter proprement.</div>
         </div>
       </div>
 
@@ -500,7 +634,7 @@ body {
           <div class="card-head-left">
             <div class="ch-title">Fichiers à convertir</div>
           </div>
-          <button class="btn btn-ghost" id="clearBtn" style="display:none;" onclick="clearAll()">Tout effacer</button>
+          <button class="btn btn-ghost" id="clearBtn" style="display:none;" id="clearBtn">Tout effacer</button>
         </div>
         <div class="card-body">
 
@@ -509,17 +643,18 @@ body {
               accept="image/*,.pdf,.txt,.csv,.md,.json,.xml,.html,.htm,.svg,.rtf,.log,.js,.css,.py,.ts">
             <div class="dz-icon">📂</div>
             <div class="dz-title">Déposer les fichiers ici</div>
-            <div class="dz-link">ou cliquer pour parcourir</div>
+            <div class="dz-link">ou appuyer pour parcourir</div>
+            <div class="dz-scan-hint">Vous voulez scanner un document ? <span class="dz-scan-link" id="scanHintBtn">Cliquez ici</span></div>
           </div>
 
           <div class="file-list" id="fileList" style="display:none;"></div>
 
           <div class="btn-row">
-            <button class="btn btn-blue" id="convertBtn" disabled onclick="startConvert()">Convertir en PDF</button>
+            <button class="btn btn-blue" id="convertBtn" disabled>Convertir en PDF</button>
             <span style="font-size:12px; color:var(--text-tertiary);" id="fileCount"></span>
           </div>
 
-          <div class="progress-wrap" id="progWrap">
+          <div class="progress-wrap" id="progWrap" style="display:none;">
             <div class="prog-track"><div class="prog-fill" id="progBar"></div></div>
             <div class="prog-txt" id="progLbl"></div>
           </div>
@@ -528,71 +663,64 @@ body {
         </div>
       </div>
 
-    </div>
-
-    <!-- ══ TAB SCAN ══ -->
-    <div class="tab-panel" id="tab-scan">
-
-      <div class="scan-grid">
-
-        <!-- Capture -->
-        <div class="scan-card">
-          <div class="sc-head">
-            <div class="sdot" id="camDot"></div>
-            <span class="sc-head-title">Capture</span>
+      <!-- Panneau Scanner (caché par défaut) -->
+      <div class="card" id="scanCard" style="display:none;">
+        <div class="card-head">
+          <div class="card-head-left">
+            <div class="ch-title">📷 Scanner un document</div>
+            <div class="ch-sub">Prenez une photo ou importez une image</div>
           </div>
-          <div class="scan-viewport">
-            <video id="camVid" style="display:none; width:100%; height:100%; object-fit:cover;" autoplay playsinline></video>
-            <canvas id="capCvs" style="display:none; width:100%; height:100%; object-fit:contain;"></canvas>
-            <div class="sv-empty" id="camEmpty">
+          <button class="btn btn-ghost" id="closeScanBtn">Fermer ✕</button>
+        </div>
+        <div class="card-body">
+
+          <!-- Viewport caméra / résultat -->
+          <div class="scan-viewport-wrap" id="scanViewport">
+            <video id="camVid" style="display:none; width:100%; height:100%; object-fit:cover;" autoplay playsinline webkit-playsinline></video>
+            <canvas id="capCvs" style="display:none; width:100%; object-fit:contain;"></canvas>
+            <canvas id="scanCvs" style="display:none; width:100%; object-fit:contain;"></canvas>
+            <!-- Overlay délimitation document -->
+            <svg id="docOutlineSvg" style="display:none;"></svg>
+            <div class="sv-empty" id="scanEmpty">
               <span class="sv-empty-icon">📷</span>
               <span class="sv-empty-text">Activez la caméra<br>ou importez une image</span>
             </div>
           </div>
-          <div class="sc-controls">
-            <div style="display:flex; gap:7px;">
-              <button class="btn btn-blue" id="camBtn" style="flex:1;" onclick="toggleCam()">Ouvrir la caméra</button>
-              <button class="btn btn-outline" id="snapBtn" disabled onclick="snap()">Capturer</button>
+
+          <!-- Contrôles caméra -->
+          <div class="scan-controls" id="camControls">
+            <div style="display:-webkit-flex; display:flex; gap:8px;">
+              <button class="btn btn-blue" id="camBtn" style="-webkit-flex:1; flex:1;">📷 Ouvrir la caméra</button>
+              <button class="btn btn-outline" id="snapBtn" disabled>Capturer</button>
             </div>
-            <label class="btn btn-outline" style="cursor:pointer; width:100%; justify-content:center;">
-              Importer une image
-              <input type="file" accept="image/*" style="display:none;" onchange="importImg(this)">
+            <label class="btn btn-outline" style="cursor:pointer; width:100%; -webkit-justify-content:center; justify-content:center; -webkit-appearance:none;">
+              📁 Importer une image
+              <input type="file" accept="image/*" id="scanImportInput" style="display:none; font-size:16px;">
             </label>
           </div>
-        </div>
 
-        <!-- Result -->
-        <div class="scan-card">
-          <div class="sc-head">
-            <div class="sdot" id="scanDot"></div>
-            <span class="sc-head-title">Résultat</span>
-          </div>
-          <div class="scan-viewport">
-            <canvas id="scanCvs" style="width:100%; height:100%; object-fit:contain;"></canvas>
-            <div class="sv-empty" id="scanEmpty">
-              <span class="sv-empty-icon">🔍</span>
-              <span class="sv-empty-text">Le scan<br>apparaîtra ici</span>
+          <!-- Filtres (visibles après capture) -->
+          <div id="filterRow" style="display:none;">
+            <div class="chip-row">
+              <div class="chip active" data-filter="enhance">✨ Améliorer</div>
+              <div class="chip" data-filter="original">Original</div>
+              <div class="chip" data-filter="bw">Noir & Blanc</div>
+              <div class="chip" data-filter="contrast">Contraste</div>
             </div>
           </div>
-          <div class="sc-controls">
-            <div class="chip-row" id="chipRow" style="display:none;">
-              <div class="chip active" onclick="setFilter(this,'scan')">Scan</div>
-              <div class="chip" onclick="setFilter(this,'bw')">Noir & Blanc</div>
-              <div class="chip" onclick="setFilter(this,'contrast')">Contraste</div>
-              <div class="chip" onclick="setFilter(this,'original')">Original</div>
-            </div>
-            <div class="export-grid">
-              <button class="btn btn-outline" id="expImgBtn" disabled onclick="exportImg()">Enregistrer image</button>
-              <button class="btn btn-blue"    id="expPdfBtn" disabled onclick="exportScanPdf()">Exporter PDF</button>
-            </div>
-          </div>
-        </div>
 
+          <!-- Export (visible après capture) -->
+          <div class="export-grid" id="exportRow" style="display:none;">
+            <button class="btn btn-outline" id="expImgBtn">🖼 Image</button>
+            <button class="btn btn-blue" id="expPdfBtn">📄 Exporter PDF</button>
+          </div>
+
+          <div class="status-pill" id="scanStatus"></div>
+        </div>
       </div>
 
-      <div class="status-pill" id="scanStatus"></div>
-
     </div>
+
   </div>
 
   <!-- ══ FOOTER ══ -->
@@ -603,132 +731,300 @@ body {
 
 </div>
 
+<!-- ══ MODAL CHOIX SCAN ══ -->
+<div class="modal-overlay" id="scanModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <span class="modal-title">Ajouter un document</span>
+      <button class="modal-close" id="modalCloseBtn">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-option" id="modalBrowse">
+        <span class="modal-option-icon">📁</span>
+        <div class="modal-option-text">
+          <div class="mot-title">Parcourir les fichiers</div>
+          <div class="mot-sub">Sélectionner un fichier sur l'appareil</div>
+        </div>
+      </div>
+      <div class="modal-option" id="modalScan">
+        <span class="modal-option-icon">📷</span>
+        <div class="modal-option-text">
+          <div class="mot-title">Scanner un document</div>
+          <div class="mot-sub">Photographier avec la caméra ou importer une image</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Input file caché pour le parcourir depuis la modal -->
+<input type="file" id="hiddenFileInput" multiple style="display:none; font-size:16px;"
+  accept="image/*,.pdf,.txt,.csv,.md,.json,.xml,.html,.htm,.svg,.rtf,.log,.js,.css,.py,.ts">
+
 <script>
-// ── NAV ──
-const TAB_META = {
-  convert: { title:'Convertir en PDF', sub:'Glissez vos fichiers pour commencer' },
-  scan:    { title:'Scanner',           sub:'Photographiez ou importez un document' }
-};
-function switchTab(id) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('tab-'+id).classList.add('active');
-  document.querySelector(`.nav-item[data-tab="${id}"]`).classList.add('active');
-  document.getElementById('tbarTitle').textContent = TAB_META[id].title;
-  document.getElementById('tbarSub').textContent   = TAB_META[id].sub;
+// ═══════════════════════════════════════════════
+// COMPATIBILITÉ IOS / IPAD ANCIEN
+// ═══════════════════════════════════════════════
+
+// Polyfill requestAnimationFrame
+window.requestAnimationFrame = window.requestAnimationFrame
+  || window.webkitRequestAnimationFrame
+  || function(cb){ return setTimeout(cb, 16); };
+
+// Helper touch-compatible : attache à la fois click ET touchend
+// avec prévention du double-déclenchement
+function onTap(el, fn) {
+  if (!el) return;
+  var touched = false;
+  el.addEventListener('touchstart', function(e) {
+    touched = true;
+    // feedback visuel immédiat
+    el.style.opacity = '0.7';
+  }, { passive: true });
+  el.addEventListener('touchend', function(e) {
+    el.style.opacity = '';
+    if (touched) {
+      touched = false;
+      e.preventDefault(); // bloque le click synthétique
+      fn(e);
+    }
+  }, false);
+  el.addEventListener('click', function(e) {
+    if (!touched) { fn(e); }
+    touched = false;
+  }, false);
 }
 
-// ── UTILS ──
-const fmtSz = b => b<1024?b+' B':b<1048576?(b/1024).toFixed(1)+' KB':(b/1048576).toFixed(1)+' MB';
-const getExt = n => n.split('.').pop().toLowerCase();
-const toDataURL = f => new Promise((res,rej) => { const r=new FileReader(); r.onload=e=>res(e.target.result); r.onerror=rej; r.readAsDataURL(f); });
-const toText    = f => new Promise((res,rej) => { const r=new FileReader(); r.onload=e=>res(e.target.result); r.onerror=rej; r.readAsText(f); });
-function dl(url,name){ const a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); document.body.removeChild(a); }
-function showStatus(el,type,msg){ el.className='status-pill '+type; el.innerHTML=(type==='ok'?'<span>✓</span>':'<span>✕</span>')+' '+msg; el.style.display='flex'; }
+// ═══════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════
+function fmtSz(b) {
+  if (b < 1024) return b + ' B';
+  if (b < 1048576) return (b/1024).toFixed(1) + ' KB';
+  return (b/1048576).toFixed(1) + ' MB';
+}
+function getExt(n) { return n.split('.').pop().toLowerCase(); }
+function toDataURL(f) {
+  return new Promise(function(res, rej) {
+    var r = new FileReader();
+    r.onload = function(e) { res(e.target.result); };
+    r.onerror = rej;
+    r.readAsDataURL(f);
+  });
+}
+function toText(f) {
+  return new Promise(function(res, rej) {
+    var r = new FileReader();
+    r.onload = function(e) { res(e.target.result); };
+    r.onerror = rej;
+    r.readAsText(f);
+  });
+}
+function dl(url, name) {
+  var a = document.createElement('a');
+  a.href = url; a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+function showStatus(el, type, msg) {
+  el.className = 'status-pill ' + type;
+  el.innerHTML = (type==='ok' ? '<span>✓</span>' : '<span>✕</span>') + ' ' + msg;
+  el.style.display = 'flex';
+}
 
-// ── CONVERT ──
-let files=[];
-const dropzone  = document.getElementById('dropzone');
-const fileInput = document.getElementById('fileInput');
-const fileList  = document.getElementById('fileList');
-const convertBtn= document.getElementById('convertBtn');
-const clearBtn  = document.getElementById('clearBtn');
-const fileCount = document.getElementById('fileCount');
+// ═══════════════════════════════════════════════
+// CONVERTISSEUR
+// ═══════════════════════════════════════════════
+var files = [];
+var dropzone   = document.getElementById('dropzone');
+var fileInput  = document.getElementById('fileInput');
+var fileList   = document.getElementById('fileList');
+var convertBtn = document.getElementById('convertBtn');
+var clearBtn   = document.getElementById('clearBtn');
+var fileCount  = document.getElementById('fileCount');
 
-dropzone.addEventListener('dragover', e=>{ e.preventDefault(); dropzone.classList.add('dragover'); });
-dropzone.addEventListener('dragleave',()=> dropzone.classList.remove('dragover'));
-dropzone.addEventListener('drop', e=>{ e.preventDefault(); dropzone.classList.remove('dragover'); addFiles([...e.dataTransfer.files]); });
-fileInput.addEventListener('change', function(){ addFiles([...this.files]); this.value=''; });
+// Drag & drop (desktop)
+dropzone.addEventListener('dragover', function(e) {
+  e.preventDefault();
+  dropzone.classList.add('dragover');
+}, false);
+dropzone.addEventListener('dragleave', function() {
+  dropzone.classList.remove('dragover');
+}, false);
+dropzone.addEventListener('drop', function(e) {
+  e.preventDefault();
+  dropzone.classList.remove('dragover');
+  addFiles(Array.prototype.slice.call(e.dataTransfer.files));
+}, false);
 
-function addFiles(newFiles){
-  newFiles.forEach(f=>{ if(!files.find(x=>x.name===f.name&&x.size===f.size)) files.push(f); });
+// Le clic sur la dropzone ouvre la modal
+onTap(dropzone, function(e) {
+  // Seulement si on n'a pas cliqué sur le lien scanner ou l'input natif
+  if (e.target === document.getElementById('scanHintBtn')) return;
+  // Sur iOS, l'input file s'ouvre via la label native — on ouvre la modal
+  openScanModal();
+});
+
+fileInput.addEventListener('change', function() {
+  addFiles(Array.prototype.slice.call(this.files));
+  this.value = '';
+}, false);
+
+document.getElementById('hiddenFileInput').addEventListener('change', function() {
+  addFiles(Array.prototype.slice.call(this.files));
+  this.value = '';
+  closeScanModal();
+}, false);
+
+onTap(document.getElementById('scanHintBtn'), function(e) {
+  e.stopPropagation();
+  openScanCard();
+});
+
+onTap(clearBtn, clearAll);
+onTap(convertBtn, startConvert);
+
+function addFiles(newFiles) {
+  newFiles.forEach(function(f) {
+    if (!files.find(function(x) { return x.name===f.name && x.size===f.size; })) {
+      files.push(f);
+    }
+  });
   renderList();
 }
-function removeFile(i){ files.splice(i,1); renderList(); }
-function clearAll(){ files=[]; renderList(); }
+function removeFile(i) { files.splice(i, 1); renderList(); }
+function clearAll() { files = []; renderList(); }
 
-function renderList(){
-  fileList.innerHTML='';
-  const has = files.length>0;
-  fileList.style.display = has?'flex':'none';
+function renderList() {
+  fileList.innerHTML = '';
+  var has = files.length > 0;
+  fileList.style.display = has ? 'flex' : 'none';
   convertBtn.disabled = !has;
-  clearBtn.style.display = has?'':'none';
-  fileCount.textContent = has ? files.length+' fichier'+(files.length>1?'s':'')+' sélectionné'+(files.length>1?'s':'') : '';
-  document.getElementById('cvtStatus').style.display='none';
-  files.forEach((f,i)=>{
-    const d=document.createElement('div'); d.className='file-item';
-    d.innerHTML=`<span class="f-badge">${getExt(f.name)}</span><span class="f-name">${f.name}</span><span class="f-size">${fmtSz(f.size)}</span><button class="f-del" onclick="removeFile(${i})">✕</button>`;
+  clearBtn.style.display = has ? '' : 'none';
+  fileCount.textContent = has
+    ? files.length + ' fichier' + (files.length>1?'s':'') + ' sélectionné' + (files.length>1?'s':'')
+    : '';
+  document.getElementById('cvtStatus').style.display = 'none';
+  files.forEach(function(f, i) {
+    var d = document.createElement('div');
+    d.className = 'file-item';
+    d.innerHTML = '<span class="f-badge">' + getExt(f.name) + '</span>'
+      + '<span class="f-name">' + f.name + '</span>'
+      + '<span class="f-size">' + fmtSz(f.size) + '</span>'
+      + '<button class="f-del" data-idx="' + i + '">✕</button>';
     fileList.appendChild(d);
+  });
+  // Attache les boutons supprimer
+  var dels = fileList.querySelectorAll('.f-del');
+  for (var j=0; j<dels.length; j++) {
+    (function(btn) {
+      onTap(btn, function() { removeFile(parseInt(btn.getAttribute('data-idx'))); });
+    })(dels[j]);
+  }
+}
+
+var IMG_EXT = { jpg:1, jpeg:1, png:1, gif:1, webp:1, bmp:1, tiff:1, tif:1, svg:1, ico:1, avif:1 };
+var TXT_EXT = { txt:1, csv:1, md:1, json:1, xml:1, html:1, htm:1, rtf:1, log:1, js:1, css:1, py:1, ts:1 };
+
+function startConvert() {
+  if (!files.length) return;
+  convertBtn.disabled = true;
+  var pw = document.getElementById('progWrap');
+  var pb = document.getElementById('progBar');
+  var pl = document.getElementById('progLbl');
+  var st = document.getElementById('cvtStatus');
+  pw.style.display = 'flex'; st.style.display = 'none';
+
+  var i = 0;
+  function processNext() {
+    if (i >= files.length) {
+      pb.style.width = '100%';
+      pl.textContent = 'Terminé.';
+      setTimeout(function() { pw.style.display = 'none'; }, 1800);
+      if (st.style.display === 'none') {
+        showStatus(st, 'ok', files.length + ' fichier' + (files.length>1?'s':'') + ' converti' + (files.length>1?'s':'') + ' avec succès.');
+      }
+      convertBtn.disabled = false;
+      return;
+    }
+    var f = files[i];
+    var ext = getExt(f.name);
+    var base = f.name.replace(/\.[^.]+$/, '');
+    pb.style.width = Math.round(i / files.length * 100) + '%';
+    pl.textContent = '"' + f.name + '" (' + (i+1) + '/' + files.length + ')';
+    var p;
+    if (ext === 'pdf') { dl(URL.createObjectURL(f), base+'.pdf'); p = Promise.resolve(); }
+    else if (IMG_EXT[ext]) p = imgToPdf(f, base, ext);
+    else if (TXT_EXT[ext]) p = txtToPdf(f, base);
+    else { metaPdf(f, base, ext); p = Promise.resolve(); }
+    p.catch(function() { showStatus(st, 'err', 'Erreur sur "' + f.name + '"'); })
+     .then(function() { i++; processNext(); });
+  }
+  processNext();
+}
+
+function imgToPdf(file, base, ext) {
+  return toDataURL(file).then(function(src) {
+    return new Promise(function(res, rej) {
+      var img = new Image();
+      img.onload = function() {
+        try {
+          var jsPDF = window.jspdf.jsPDF;
+          var A=210, B=297, M=10, mW=A-M*2, mH=B-M*2;
+          var dW=mW, dH=(img.naturalHeight/img.naturalWidth)*dW;
+          if (dH>mH) { dH=mH; dW=(img.naturalWidth/img.naturalHeight)*dH; }
+          var or = dW>dH ? 'landscape' : 'portrait';
+          var doc = new jsPDF({orientation:or, unit:'mm', format:'a4'});
+          var pW = or==='landscape'?B:A, pH = or==='landscape'?A:B;
+          if (ext==='svg') {
+            var c=document.createElement('canvas');
+            c.width=img.naturalWidth||800; c.height=img.naturalHeight||800;
+            c.getContext('2d').drawImage(img,0,0);
+            doc.addImage(c.toDataURL('image/png'),'PNG',(pW-dW)/2,(pH-dH)/2,dW,dH);
+          } else {
+            doc.addImage(src, (ext==='jpg'||ext==='jpeg')?'JPEG':'PNG', (pW-dW)/2,(pH-dH)/2,dW,dH);
+          }
+          doc.save(base+'.pdf');
+          res();
+        } catch(e) { rej(e); }
+      };
+      img.onerror = rej;
+      img.src = src;
+    });
   });
 }
 
-const IMG_EXT = new Set(['jpg','jpeg','png','gif','webp','bmp','tiff','tif','svg','ico','avif']);
-const TXT_EXT = new Set(['txt','csv','md','json','xml','html','htm','rtf','log','js','css','py','ts']);
-
-async function startConvert(){
-  if(!files.length) return;
-  convertBtn.disabled=true;
-  const pw=document.getElementById('progWrap'), pb=document.getElementById('progBar'), pl=document.getElementById('progLbl'), st=document.getElementById('cvtStatus');
-  pw.style.display='flex'; st.style.display='none';
-  for(let i=0;i<files.length;i++){
-    pb.style.width=Math.round(i/files.length*100)+'%';
-    const f=files[i], ext=getExt(f.name), base=f.name.replace(/\.[^.]+$/,'');
-    pl.textContent=`"${f.name}" (${i+1}/${files.length})`;
-    try{
-      if(ext==='pdf') dl(URL.createObjectURL(f), base+'.pdf');
-      else if(IMG_EXT.has(ext)) await imgToPdf(f,base,ext);
-      else if(TXT_EXT.has(ext)) await txtToPdf(f,base);
-      else metaPdf(f,base,ext);
-    }catch(e){ showStatus(st,'err',`Erreur sur "${f.name}"`); }
-  }
-  pb.style.width='100%'; pl.textContent='Terminé.';
-  setTimeout(()=>pw.style.display='none',1800);
-  if(st.style.display==='none') showStatus(st,'ok',`${files.length} fichier${files.length>1?'s':''} converti${files.length>1?'s':''} avec succès.`);
-  convertBtn.disabled=false;
+function txtToPdf(file, base) {
+  return toText(file).then(function(text) {
+    var jsPDF = window.jspdf.jsPDF;
+    var doc = new jsPDF({unit:'mm', format:'a4'});
+    var M=16, W=210-M*2, LH=5.2;
+    doc.setFillColor(0,113,227); doc.rect(0,0,210,16,'F');
+    doc.setTextColor(255,255,255); doc.setFontSize(10); doc.setFont('helvetica','bold'); doc.text(file.name, M, 10.5);
+    doc.setTextColor(60,60,60); doc.setFont('courier','normal'); doc.setFontSize(8.5);
+    var y=26;
+    doc.splitTextToSize(text,W).forEach(function(l) {
+      if (y>282) { doc.addPage(); y=16; }
+      doc.text(l, M, y); y+=LH;
+    });
+    doc.save(base+'.pdf');
+  });
 }
 
-async function imgToPdf(file,base,ext){
-  const {jsPDF}=window.jspdf, src=await toDataURL(file);
-  const img=await new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=src; });
-  const A=210,B=297,M=10,mW=A-M*2,mH=B-M*2;
-  let dW=mW, dH=(img.naturalHeight/img.naturalWidth)*dW;
-  if(dH>mH){dH=mH;dW=(img.naturalWidth/img.naturalHeight)*dH;}
-  const or=dW>dH?'landscape':'portrait';
-  const doc=new jsPDF({orientation:or,unit:'mm',format:'a4'});
-  const pW=or==='landscape'?B:A, pH=or==='landscape'?A:B;
-  if(ext==='svg'){
-    const c=document.createElement('canvas'); c.width=img.naturalWidth||800; c.height=img.naturalHeight||800;
-    c.getContext('2d').drawImage(img,0,0); doc.addImage(c.toDataURL('image/png'),'PNG',(pW-dW)/2,(pH-dH)/2,dW,dH);
-  } else {
-    doc.addImage(src,['jpg','jpeg'].includes(ext)?'JPEG':'PNG',(pW-dW)/2,(pH-dH)/2,dW,dH);
-  }
-  doc.save(base+'.pdf');
-}
-
-async function txtToPdf(file,base){
-  const {jsPDF}=window.jspdf, text=await toText(file);
-  const doc=new jsPDF({unit:'mm',format:'a4'});
-  const M=16,W=210-M*2,LH=5.2;
-  doc.setFillColor(0,113,227); doc.rect(0,0,210,16,'F');
-  doc.setTextColor(255,255,255); doc.setFontSize(10); doc.setFont('helvetica','bold'); doc.text(file.name,M,10.5);
-  doc.setTextColor(60,60,60); doc.setFont('courier','normal'); doc.setFontSize(8.5);
-  let y=26;
-  doc.splitTextToSize(text,W).forEach(l=>{ if(y>282){doc.addPage();y=16;} doc.text(l,M,y); y+=LH; });
-  doc.save(base+'.pdf');
-}
-
-function metaPdf(file,base,ext){
-  const {jsPDF}=window.jspdf, doc=new jsPDF({unit:'mm',format:'a4'});
+function metaPdf(file, base, ext) {
+  var jsPDF = window.jspdf.jsPDF;
+  var doc = new jsPDF({unit:'mm', format:'a4'});
   doc.setFillColor(248,248,248); doc.rect(0,0,210,297,'F');
   doc.setFillColor(0,113,227); doc.rect(0,0,210,18,'F');
-  doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.text('DocTools — Métadonnées',14,11.5);
+  doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.text('ChristineApp — Métadonnées',14,11.5);
   doc.setFillColor(255,255,255); doc.roundedRect(14,30,182,64,4,4,'F');
   doc.setDrawColor(220,220,220); doc.roundedRect(14,30,182,64,4,4,'S');
   doc.setTextColor(0,113,227); doc.setFontSize(11); doc.text('Fichier source',24,44);
   doc.setTextColor(80,80,80); doc.setFontSize(10);
-  [['Nom',file.name],['Format','.'+ext.toUpperCase()],['Taille',fmtSz(file.size)],['Date',new Date().toLocaleDateString('fr-FR')]].forEach(([k,v],i)=>{
-    doc.setFont('helvetica','bold'); doc.text(k+' :',24,56+i*9);
-    doc.setFont('helvetica','normal'); doc.text(v,56,56+i*9);
+  [['Nom',file.name],['Format','.'+ext.toUpperCase()],['Taille',fmtSz(file.size)],['Date',new Date().toLocaleDateString('fr-FR')]].forEach(function(row, i) {
+    doc.setFont('helvetica','bold'); doc.text(row[0]+' :', 24, 56+i*9);
+    doc.setFont('helvetica','normal'); doc.text(row[1], 56, 56+i*9);
   });
   doc.setFillColor(255,250,235); doc.roundedRect(14,106,182,28,4,4,'F');
   doc.setDrawColor(255,180,0); doc.roundedRect(14,106,182,28,4,4,'S');
@@ -738,100 +1034,367 @@ function metaPdf(file,base,ext){
   doc.save(base+'_meta.pdf');
 }
 
-// ── SCAN ──
-let camStream=null, capturedSrc=null, curFilter='scan';
+// ═══════════════════════════════════════════════
+// MODAL CHOIX
+// ═══════════════════════════════════════════════
+var scanModal = document.getElementById('scanModal');
 
-async function toggleCam(){
-  if(camStream){ stopCam(); return; }
-  try{
-    camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1920}}});
-    const v=document.getElementById('camVid'); v.srcObject=camStream; v.style.display='block';
-    document.getElementById('camEmpty').style.display='none';
-    document.getElementById('snapBtn').disabled=false;
-    document.getElementById('camBtn').textContent='Arrêter';
-    document.getElementById('camBtn').className='btn btn-outline';
-    document.getElementById('camDot').classList.add('live');
-  } catch(e){ showStatus(document.getElementById('scanStatus'),'err','Accès caméra refusé. Utilisez l\'import.'); }
+function openScanModal() {
+  scanModal.classList.add('open');
+}
+function closeScanModal() {
+  scanModal.classList.remove('open');
 }
 
-function stopCam(){
-  if(camStream){camStream.getTracks().forEach(t=>t.stop()); camStream=null;}
-  const v=document.getElementById('camVid'); v.style.display='none';
-  document.getElementById('snapBtn').disabled=true;
-  document.getElementById('camBtn').textContent='Ouvrir la caméra';
-  document.getElementById('camBtn').className='btn btn-blue';
-  document.getElementById('camDot').classList.remove('live');
-  if(!capturedSrc) document.getElementById('camEmpty').style.display='';
+onTap(document.getElementById('modalCloseBtn'), closeScanModal);
+
+onTap(document.getElementById('modalBrowse'), function() {
+  closeScanModal();
+  // Déclenche l'input caché
+  document.getElementById('hiddenFileInput').click();
+});
+
+onTap(document.getElementById('modalScan'), function() {
+  closeScanModal();
+  openScanCard();
+});
+
+// Fermer modal en cliquant l'overlay
+onTap(scanModal, function(e) {
+  if (e.target === scanModal) closeScanModal();
+});
+
+// ═══════════════════════════════════════════════
+// SCANNER
+// ═══════════════════════════════════════════════
+var camStream = null;
+var capturedSrc = null;
+var curFilter = 'enhance';
+var scanCard = document.getElementById('scanCard');
+
+function openScanCard() {
+  scanCard.style.display = '';
+  scanCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function snap(){
-  const v=document.getElementById('camVid'), c=document.getElementById('capCvs');
-  c.width=v.videoWidth; c.height=v.videoHeight;
-  c.getContext('2d').drawImage(v,0,0);
-  capturedSrc=c.toDataURL('image/png');
-  c.style.display='block'; stopCam(); processImg(capturedSrc);
+onTap(document.getElementById('closeScanBtn'), function() {
+  stopCam();
+  scanCard.style.display = 'none';
+  capturedSrc = null;
+  document.getElementById('scanCvs').style.display = 'none';
+  document.getElementById('capCvs').style.display = 'none';
+  document.getElementById('scanEmpty').style.display = '';
+  document.getElementById('filterRow').style.display = 'none';
+  document.getElementById('exportRow').style.display = 'none';
+  document.getElementById('scanStatus').style.display = 'none';
+  document.getElementById('docOutlineSvg').style.display = 'none';
+});
+
+onTap(document.getElementById('camBtn'), toggleCam);
+onTap(document.getElementById('snapBtn'), snap);
+onTap(document.getElementById('expImgBtn'), exportImg);
+onTap(document.getElementById('expPdfBtn'), exportScanPdf);
+
+document.getElementById('scanImportInput').addEventListener('change', function() {
+  var f = this.files[0]; if (!f) return;
+  toDataURL(f).then(function(src) { capturedSrc = src; processImg(src); });
+  this.value = '';
+}, false);
+
+// Chips filtre
+var chips = document.querySelectorAll('.chip[data-filter]');
+for (var ci = 0; ci < chips.length; ci++) {
+  (function(chip) {
+    onTap(chip, function() {
+      for (var k=0; k<chips.length; k++) chips[k].classList.remove('active');
+      chip.classList.add('active');
+      curFilter = chip.getAttribute('data-filter');
+      if (capturedSrc) applyFilter(capturedSrc, curFilter);
+    });
+  })(chips[ci]);
 }
 
-function importImg(inp){
-  const f=inp.files[0]; if(!f) return;
-  toDataURL(f).then(src=>{ capturedSrc=src; processImg(src); }); inp.value='';
+function toggleCam() {
+  if (camStream) { stopCam(); return; }
+  var constraints = { video: { facingMode: { ideal: 'environment' } } };
+  // Anciens iOS : mediaDevices peut être absent
+  var getMedia = navigator.mediaDevices && navigator.mediaDevices.getUserMedia
+    ? function(c) { return navigator.mediaDevices.getUserMedia(c); }
+    : function(c) {
+        return new Promise(function(res, rej) {
+          var gum = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+          if (!gum) { rej(new Error('no gum')); return; }
+          gum.call(navigator, c, res, rej);
+        });
+      };
+
+  getMedia(constraints).then(function(stream) {
+    camStream = stream;
+    var v = document.getElementById('camVid');
+    // Compatibilité anciens iOS
+    if ('srcObject' in v) { v.srcObject = stream; }
+    else { v.src = URL.createObjectURL(stream); }
+    v.style.display = 'block';
+    document.getElementById('scanEmpty').style.display = 'none';
+    document.getElementById('snapBtn').disabled = false;
+    document.getElementById('camBtn').textContent = '⏹ Arrêter';
+    v.play();
+  }).catch(function() {
+    showStatus(document.getElementById('scanStatus'), 'err', 'Accès caméra refusé. Utilisez l\'import.');
+  });
 }
 
-function processImg(src){
-  const img=new Image(); img.onload=()=>{
-    applyFilter(img,curFilter);
-    document.getElementById('scanEmpty').style.display='none';
-    document.getElementById('scanDot').classList.add('live');
-    document.getElementById('chipRow').style.display='flex';
-    document.getElementById('expImgBtn').disabled=false;
-    document.getElementById('expPdfBtn').disabled=false;
-    showStatus(document.getElementById('scanStatus'),'ok','Document capturé avec succès.');
-  }; img.src=src;
+function stopCam() {
+  if (camStream) { camStream.getTracks().forEach(function(t){ t.stop(); }); camStream = null; }
+  var v = document.getElementById('camVid');
+  v.style.display = 'none';
+  document.getElementById('snapBtn').disabled = true;
+  document.getElementById('camBtn').textContent = '📷 Ouvrir la caméra';
+  if (!capturedSrc) document.getElementById('scanEmpty').style.display = '';
 }
 
-function applyFilter(imgOrSrc, filter){
-  const run=img=>{
-    const c=document.getElementById('scanCvs');
-    c.width=img.naturalWidth; c.height=img.naturalHeight;
-    const ctx=c.getContext('2d'); ctx.drawImage(img,0,0);
-    if(filter==='original') return;
-    const d=ctx.getImageData(0,0,c.width,c.height), px=d.data;
-    for(let i=0;i<px.length;i+=4){
-      let g=0.299*px[i]+0.587*px[i+1]+0.114*px[i+2];
-      if(filter==='scan'){
-        g=Math.min(255,Math.max(0,(g-100)*2.1+100));
-        px[i]=g>160?Math.min(255,g*1.04):g*0.72; px[i+1]=px[i]*0.99; px[i+2]=px[i]*0.97;
-      } else if(filter==='bw'){
-        px[i]=px[i+1]=px[i+2]=g;
-      } else if(filter==='contrast'){
-        const v=Math.min(255,Math.max(0,(g-128)*1.9+128)); px[i]=px[i+1]=px[i+2]=v;
+function snap() {
+  var v = document.getElementById('camVid');
+  var c = document.getElementById('capCvs');
+  c.width = v.videoWidth || 640;
+  c.height = v.videoHeight || 480;
+  c.getContext('2d').drawImage(v, 0, 0);
+  capturedSrc = c.toDataURL('image/png');
+  stopCam();
+  processImg(capturedSrc);
+}
+
+function processImg(src) {
+  var img = new Image();
+  img.onload = function() {
+    // Affiche d'abord l'image capturée
+    var capCvs = document.getElementById('capCvs');
+    capCvs.width = img.naturalWidth;
+    capCvs.height = img.naturalHeight;
+    capCvs.getContext('2d').drawImage(img, 0, 0);
+    capCvs.style.display = 'none';
+
+    document.getElementById('scanEmpty').style.display = 'none';
+
+    // Applique le filtre + délimitation
+    applyFilterWithOutline(img, curFilter);
+
+    document.getElementById('filterRow').style.display = '';
+    document.getElementById('exportRow').style.display = 'flex';
+    showStatus(document.getElementById('scanStatus'), 'ok', 'Document capturé avec succès.');
+  };
+  img.src = src;
+}
+
+// ─── FILTRE + DÉLIMITATION DOCUMENT ───
+function applyFilterWithOutline(imgOrSrc, filter) {
+  function run(img) {
+    var c = document.getElementById('scanCvs');
+    c.width = img.naturalWidth;
+    c.height = img.naturalHeight;
+    var ctx = c.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+
+    if (filter !== 'original') {
+      var d = ctx.getImageData(0, 0, c.width, c.height);
+      var px = d.data;
+      for (var i = 0; i < px.length; i += 4) {
+        var r = px[i], g = px[i+1], b = px[i+2];
+        var gray = 0.299*r + 0.587*g + 0.114*b;
+        if (filter === 'enhance') {
+          // Amélioration : augmente contraste, chauffe légèrement les blancs
+          var bright = Math.min(255, gray * 1.15 + 15);
+          var contrasted = Math.min(255, Math.max(0, (bright - 128) * 1.4 + 128));
+          // Garde une légère teinte chaude (doc sur papier)
+          px[i]   = Math.min(255, contrasted * 1.02);
+          px[i+1] = contrasted;
+          px[i+2] = Math.max(0, contrasted * 0.96);
+        } else if (filter === 'bw') {
+          px[i] = px[i+1] = px[i+2] = gray;
+        } else if (filter === 'contrast') {
+          var cv = Math.min(255, Math.max(0, (gray - 128) * 2.2 + 128));
+          px[i] = px[i+1] = px[i+2] = cv;
+        }
+      }
+      ctx.putImageData(d, 0, 0);
+    }
+
+    c.style.display = 'block';
+
+    // Détection des bords du document et dessin de la délimitation
+    detectAndDrawOutline(c);
+  }
+
+  if (typeof imgOrSrc === 'string') {
+    var img = new Image();
+    img.onload = function() { run(img); };
+    img.src = imgOrSrc;
+  } else {
+    run(imgOrSrc);
+  }
+}
+
+function applyFilter(src, filter) {
+  var img = new Image();
+  img.onload = function() { applyFilterWithOutline(img, filter); };
+  img.src = src;
+}
+
+// ─── DÉTECTION DE CONTOUR DOCUMENT ───
+// Algorithme simplifié : détecte la zone de plus fort contraste (bords du doc)
+// et dessine un cadre vert autour dans le SVG overlay
+function detectAndDrawOutline(canvas) {
+  var svg = document.getElementById('docOutlineSvg');
+  var w = canvas.width, h = canvas.height;
+  var ctx = canvas.getContext('2d');
+  var imageData = ctx.getImageData(0, 0, w, h);
+  var px = imageData.data;
+
+  // Grille de détection : divise en zones et cherche les gradients de luminosité
+  // pour trouver les bords approximatifs du document
+  var sampleStep = Math.max(1, Math.floor(Math.min(w, h) / 60));
+
+  // Calcule le map de luminosité sous-échantillonné
+  var gw = Math.floor(w / sampleStep);
+  var gh = Math.floor(h / sampleStep);
+  var lum = new Array(gw * gh);
+  for (var y = 0; y < gh; y++) {
+    for (var x = 0; x < gw; x++) {
+      var px_x = x * sampleStep;
+      var px_y = y * sampleStep;
+      var idx = (px_y * w + px_x) * 4;
+      lum[y * gw + x] = 0.299 * px[idx] + 0.587 * px[idx+1] + 0.114 * px[idx+2];
+    }
+  }
+
+  // Cherche les colonnes/lignes de fort gradient (bords)
+  // Méthode : trouver où la luminosité devient significativement plus haute (fond clair)
+  var lumMean = 0;
+  for (var i = 0; i < lum.length; i++) lumMean += lum[i];
+  lumMean /= lum.length;
+
+  // Seuil : les zones plus claires que la moyenne + marge = fond / bord du doc
+  var threshold = lumMean + 15;
+
+  // Cherche bords : première/dernière ligne/colonne avec luminosité < threshold (doc sombre sur fond clair)
+  // ou l'inverse
+  var docIsDark = lumMean > 160; // fond clair = doc potentiellement sombre
+
+  var top = 0, bottom = gh-1, left = 0, right = gw-1;
+
+  if (docIsDark) {
+    // Cherche depuis les bords vers le centre où la luminosité baisse (zone du doc)
+    outer_top: for (var row = 0; row < gh; row++) {
+      for (var col = 0; col < gw; col++) {
+        if (lum[row * gw + col] < threshold - 20) { top = row; break outer_top; }
       }
     }
-    ctx.putImageData(d,0,0);
-  };
-  if(typeof imgOrSrc==='string'){ const img=new Image(); img.onload=()=>run(img); img.src=imgOrSrc; } else run(imgOrSrc);
+    outer_bot: for (var row2 = gh-1; row2 >= 0; row2--) {
+      for (var col2 = 0; col2 < gw; col2++) {
+        if (lum[row2 * gw + col2] < threshold - 20) { bottom = row2; break outer_bot; }
+      }
+    }
+    outer_left: for (var col3 = 0; col3 < gw; col3++) {
+      for (var row3 = 0; row3 < gh; row3++) {
+        if (lum[row3 * gw + col3] < threshold - 20) { left = col3; break outer_left; }
+      }
+    }
+    outer_right: for (var col4 = gw-1; col4 >= 0; col4--) {
+      for (var row4 = 0; row4 < gh; row4++) {
+        if (lum[row4 * gw + col4] < threshold - 20) { right = col4; break outer_right; }
+      }
+    }
+  } else {
+    // Fond sombre, doc clair
+    threshold = lumMean - 15;
+    outer_top2: for (var row5 = 0; row5 < gh; row5++) {
+      for (var col5 = 0; col5 < gw; col5++) {
+        if (lum[row5 * gw + col5] > threshold + 20) { top = row5; break outer_top2; }
+      }
+    }
+    outer_bot2: for (var row6 = gh-1; row6 >= 0; row6--) {
+      for (var col6 = 0; col6 < gw; col6++) {
+        if (lum[row6 * gw + col6] > threshold + 20) { bottom = row6; break outer_bot2; }
+      }
+    }
+    outer_left2: for (var col7 = 0; col7 < gw; col7++) {
+      for (var row7 = 0; row7 < gh; row7++) {
+        if (lum[row7 * gw + col7] > threshold + 20) { left = col7; break outer_left2; }
+      }
+    }
+    outer_right2: for (var col8 = gw-1; col8 >= 0; col8--) {
+      for (var row8 = 0; row8 < gh; row8++) {
+        if (lum[row8 * gw + col8] > threshold + 20) { right = col8; break outer_right2; }
+      }
+    }
+  }
+
+  // Marge de sécurité
+  top    = Math.max(0, top - 1);
+  bottom = Math.min(gh-1, bottom + 1);
+  left   = Math.max(0, left - 1);
+  right  = Math.min(gw-1, right + 1);
+
+  // Convertit en pourcentage par rapport au canvas affiché
+  var x1Pct = (left / gw * 100).toFixed(2);
+  var y1Pct = (top  / gh * 100).toFixed(2);
+  var x2Pct = (right/ gw * 100).toFixed(2);
+  var y2Pct = (bottom/gh * 100).toFixed(2);
+
+  // Si la détection couvre presque toute l'image, pas besoin d'afficher
+  var coverageX = right - left;
+  var coverageY = bottom - top;
+  if (coverageX > gw * 0.9 && coverageY > gh * 0.9) {
+    svg.style.display = 'none';
+    return;
+  }
+
+  // Dessine le rectangle de délimitation en SVG
+  svg.style.display = 'block';
+  svg.setAttribute('viewBox', '0 0 100 100');
+  svg.setAttribute('preserveAspectRatio', 'none');
+  svg.innerHTML =
+    // Fond semi-transparent en dehors du doc
+    '<rect x="0" y="0" width="100" height="100" fill="rgba(0,0,0,0.35)" />'
+    + '<rect x="' + x1Pct + '" y="' + y1Pct + '" width="' + (x2Pct - x1Pct) + '" height="' + (y2Pct - y1Pct) + '" fill="rgba(0,0,0,0)" />'
+    // Bordure verte du document
+    + '<rect x="' + x1Pct + '" y="' + y1Pct
+    + '" width="' + (x2Pct - x1Pct) + '" height="' + (y2Pct - y1Pct) + '"'
+    + ' fill="none" stroke="#30d158" stroke-width="0.6" stroke-dasharray="2,1" />'
+    // Coins
+    + corner(x1Pct, y1Pct, 1, 1)
+    + corner(x2Pct, y1Pct, -1, 1)
+    + corner(x1Pct, y2Pct, 1, -1)
+    + corner(x2Pct, y2Pct, -1, -1);
 }
 
-function setFilter(el,f){
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active')); el.classList.add('active');
-  curFilter=f; if(capturedSrc) applyFilter(capturedSrc,f);
+function corner(cx, cy, dx, dy) {
+  var sz = 3;
+  return '<polyline points="'
+    + (parseFloat(cx) + dx*sz) + ',' + cy + ' '
+    + cx + ',' + cy + ' '
+    + cx + ',' + (parseFloat(cy) + dy*sz) + '"'
+    + ' fill="none" stroke="#30d158" stroke-width="1.2" stroke-linecap="round" />';
 }
 
-function exportImg(){
-  dl(document.getElementById('scanCvs').toDataURL('image/png'),'scan_'+Date.now()+'.png');
-  showStatus(document.getElementById('scanStatus'),'ok','Image enregistrée.');
+function exportImg() {
+  dl(document.getElementById('scanCvs').toDataURL('image/png'), 'scan_' + Date.now() + '.png');
+  showStatus(document.getElementById('scanStatus'), 'ok', 'Image enregistrée.');
 }
 
-function exportScanPdf(){
-  const {jsPDF}=window.jspdf, c=document.getElementById('scanCvs'), src=c.toDataURL('image/png');
-  const A=210,B=297;
-  let dW=A, dH=(c.height/c.width)*dW; if(dH>B){dH=B;dW=(c.width/c.height)*dH;}
-  const or=dW>dH?'landscape':'portrait';
-  const doc=new jsPDF({orientation:or,unit:'mm',format:'a4'});
-  const pW=or==='landscape'?B:A, pH=or==='landscape'?A:B;
-  doc.addImage(src,'PNG',(pW-dW)/2,(pH-dH)/2,dW,dH);
-  doc.save('scan_'+Date.now()+'.pdf');
-  showStatus(document.getElementById('scanStatus'),'ok','PDF exporté avec succès.');
+function exportScanPdf() {
+  var jsPDF = window.jspdf.jsPDF;
+  var c = document.getElementById('scanCvs');
+  var src = c.toDataURL('image/png');
+  var A=210, B=297;
+  var dW=A, dH=(c.height/c.width)*dW;
+  if (dH>B) { dH=B; dW=(c.width/c.height)*dH; }
+  var or = dW>dH ? 'landscape' : 'portrait';
+  var doc = new jsPDF({orientation:or, unit:'mm', format:'a4'});
+  var pW = or==='landscape'?B:A, pH = or==='landscape'?A:B;
+  doc.addImage(src, 'PNG', (pW-dW)/2, (pH-dH)/2, dW, dH);
+  doc.save('scan_' + Date.now() + '.pdf');
+  showStatus(document.getElementById('scanStatus'), 'ok', 'PDF exporté avec succès.');
 }
 </script>
 </body>
